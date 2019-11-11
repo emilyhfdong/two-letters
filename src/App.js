@@ -62,7 +62,7 @@ const App = () => {
         }}
         onTouchEnd={() => {
           if (wordIsValid) {
-            setMessage(`${word} is a word`)
+            setMessage(`${word} is a word!`)
           }
           setWord(getRandomTwoLetterWord())
           setRightIsActive(false)
