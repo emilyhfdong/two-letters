@@ -1,14 +1,15 @@
 body {
   margin: 0;
-  font-family: "Literata", serif;
+  font-family: "Disclaimer Plane", serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100vh;
   overflow: hidden;
   background-color: rgb(254, 247, 231);
 }
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+@font-face {
+  font-family: "Disclaimer Plane";
+  src: local("Disclaimer Plane"),
+    url("./fonts/disclaimer-plain.otf") format("opentype");
+  font-weight: 400;
 }

@@ -1,88 +1,83 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { getRandomTwoLetterWord, isValidScrabbleWord } from "./utils"
+import "./App.css"
+import Confetti from "react-confetti"
 
-const CORRECT_COLOUR = "rgba(143, 255, 148, 0.5)"
-const INCORRECT_COLOR = "rgba(255, 143, 143, 0.5)"
+const TOTAL_POINTS = 10
 
 const App = () => {
   const [word, setWord] = useState(getRandomTwoLetterWord())
-  const [message, setMessage] = useState("")
-  const [leftIsActive, setLeftIsActive] = useState(false)
-  const [rightIsActive, setRightIsActive] = useState(false)
+  const [incorrectAnswer, setIncorrectAnswer] = useState(false)
+  const [points, setPoints] = useState(0)
+  const [winOpacity, setWinOpacity] = useState(0)
 
   const wordIsValid = isValidScrabbleWord(word)
 
+  useEffect(() => {
+    if (incorrectAnswer) {
+      setTimeout(() => setIncorrectAnswer(false), 500)
+    }
+  }, [incorrectAnswer])
+
+  const onClick = (isCorrect) => {
+    if (isCorrect) {
+      const nextPoints = points + 1
+      setPoints(nextPoints)
+      if (nextPoints !== TOTAL_POINTS) {
+        setWord(getRandomTwoLetterWord())
+      } else {
+        setTimeout(() => setWinOpacity(1), 500)
+      }
+    } else {
+      setPoints(0)
+      setIncorrectAnswer(true)
+    }
+  }
+
+  const reset = () => {
+    setWinOpacity(0)
+    setTimeout(() => setPoints(0), 500)
+  }
+
   return (
-    <div
-      style={{
-        height: "80vh",
-        overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "rgb(254, 247, 231)"
-      }}
-    >
-      <p style={{ fontWeight: "lighter", position: "absolute", top: "20vh" }}>
-        {message}
-      </p>
-      <h1 style={{ fontWeight: "lighter" }}>{word.toLowerCase()}</h1>
-      <div
-        onTouchStart={() => {
-          setMessage("")
-          setLeftIsActive(true)
-        }}
-        onTouchEnd={() => {
-          if (!wordIsValid) {
-            setMessage(`${word} is not a word!`)
-          }
-          setWord(getRandomTwoLetterWord())
-          setLeftIsActive(false)
-        }}
-        style={{
-          display: "flex",
-          alignItems: "flex-end",
-          position: "absolute",
-          top: 0,
-          bottom: 0,
-          left: 0,
-          width: "50vw",
-          backgroundColor: leftIsActive
-            ? wordIsValid
-              ? CORRECT_COLOUR
-              : INCORRECT_COLOR
-            : "transparent"
-        }}
-      ></div>
-      <div
-        onTouchStart={() => {
-          setMessage("")
-          setRightIsActive(true)
-        }}
-        onTouchEnd={() => {
-          if (wordIsValid) {
-            setMessage(`${word} is a word!`)
-          }
-          setWord(getRandomTwoLetterWord())
-          setRightIsActive(false)
-        }}
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          alignItems: "flex-end",
-          position: "absolute",
-          top: 0,
-          bottom: 0,
-          right: 0,
-          width: "50vw",
-          backgroundColor: rightIsActive
-            ? wordIsValid
-              ? INCORRECT_COLOR
-              : CORRECT_COLOUR
-            : "transparent"
-        }}
-      ></div>
+    <div className="container">
+      {points === TOTAL_POINTS && (
+        <div
+          onClick={reset}
+          style={{ opacity: winOpacity }}
+          className="win-container"
+        >
+          <Confetti />
+          <h1 className="win-title">
+            {TOTAL_POINTS}/{TOTAL_POINTS}
+          </h1>
+        </div>
+      )}
+      <div className="progress-bar">
+        <div
+          style={{ width: `${Math.floor((points / TOTAL_POINTS) * 100)}%` }}
+          className="filled-progress"
+        />
+      </div>
+      <h1
+        className={`two-letters ${incorrectAnswer ? "incorrect-answer" : ""}`}
+      >
+        {word.toUpperCase()}
+      </h1>
+      <div className="buttons-container">
+        <button
+          className={wordIsValid ? "correct-answer" : "incorrect-answer"}
+          onClick={() => onClick(wordIsValid)}
+        >
+          <p>YES</p>
+        </button>
+        <button
+          className={!wordIsValid ? "correct-answer" : "incorrect-answer"}
+          onClick={() => onClick(!wordIsValid)}
+        >
+          <p>NO</p>
+        </button>
+      </div>
     </div>
   )
 }
