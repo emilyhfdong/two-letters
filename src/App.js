@@ -5,6 +5,12 @@ import Confetti from "react-confetti"
 
 const TOTAL_POINTS = 10
 
+const setThemeColour = (colour) => {
+  if (document) {
+    document.querySelector("meta[name=theme-color]").content = colour
+  }
+}
+
 const App = () => {
   const [word, setWord] = useState(getRandomTwoLetterWord())
   const [incorrectAnswer, setIncorrectAnswer] = useState(false)
@@ -16,6 +22,7 @@ const App = () => {
   useEffect(() => {
     if (incorrectAnswer) {
       setTimeout(() => setIncorrectAnswer(false), 500)
+    } else {
     }
   }, [incorrectAnswer])
 
@@ -32,6 +39,10 @@ const App = () => {
       setIncorrectAnswer(true)
     }
   }
+
+  useEffect(() => {
+    setThemeColour(winOpacity ? "rgba(0, 0, 0, 0.8)" : "#ef223a")
+  }, [winOpacity])
 
   const reset = () => {
     setWinOpacity(0)
