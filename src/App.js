@@ -23,9 +23,8 @@ const App = () => {
     if (isCorrect) {
       const nextPoints = points + 1
       setPoints(nextPoints)
-      if (nextPoints !== TOTAL_POINTS) {
-        setWord(getRandomTwoLetterWord())
-      } else {
+      setWord(getRandomTwoLetterWord())
+      if (nextPoints === TOTAL_POINTS) {
         setTimeout(() => setWinOpacity(1), 500)
       }
     } else {
